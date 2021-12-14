@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\TicketsRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -31,6 +33,43 @@ class Tickets
      * @ORM\Column(type="string", length=255)
      */
     private $url;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Type::class, inversedBy="tickets")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $type;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Priority::class, inversedBy="tickets")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $priority;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Files::class, mappedBy="tickets")
+     */
+    private $files;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $created;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private $updated;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $deletedAt;
+
+    public function __construct()
+    {
+        $this->files = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -69,6 +108,96 @@ class Tickets
     public function setUrl(string $url): self
     {
         $this->url = $url;
+
+        return $this;
+    }
+
+    public function getType(): ?Type
+    {
+        return $this->type;
+    }
+
+    public function setType(?Type $type): self
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    public function getPriority(): ?Priority
+    {
+        return $this->priority;
+    }
+
+    public function setPriority(?Priority $priority): self
+    {
+        $this->priority = $priority;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Files[]
+     */
+    public function getFiles(): Collection
+    {
+        return $this->files;
+    }
+
+    public function addFile(Files $file): self
+    {
+        if (!$this->files->contains($file)) {
+            $this->files[] = $file;
+            $file->setTickets($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFile(Files $file): self
+    {
+        if ($this->files->removeElement($file)) {
+            // set the owning side to null (unless already changed)
+            if ($file->getTickets() === $this) {
+                $file->setTickets(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCreated(): ?\DateTimeInterface
+    {
+        return $this->created;
+    }
+
+    public function setCreated(\DateTimeInterface $created): self
+    {
+        $this->created = $created;
+
+        return $this;
+    }
+
+    public function getUpdated(): ?\DateTimeInterface
+    {
+        return $this->updated;
+    }
+
+    public function setUpdated(\DateTimeInterface $updated): self
+    {
+        $this->updated = $updated;
+
+        return $this;
+    }
+
+    public function getDeletedAt(): ?\DateTimeInterface
+    {
+        return $this->deletedAt;
+    }
+
+    public function setDeletedAt(?\DateTimeInterface $deletedAt): self
+    {
+        $this->deletedAt = $deletedAt;
 
         return $this;
     }
