@@ -26,9 +26,9 @@
         </tbody>
     </table>
 
-    <a href="{{ path('tickets_index') }}">back to list</a>
+    <a class="btn btn-outline-primary" href="{{ path('tickets_index') }}">Retour à la liste</a>
 
-    <a href="{{ path('tickets_edit', {'id': ticket.id}) }}">edit</a>
+    <a class="btn btn-outline-secondary" href="{{ path('tickets_edit', {'id': ticket.id}) }}">✏️</a>
 
     {{ include('tickets/_delete_form.html.twig') }}
 {% endblock %}
