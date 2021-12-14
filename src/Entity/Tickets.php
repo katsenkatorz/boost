@@ -66,9 +66,17 @@ class Tickets
      */
     private $deletedAt;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Activity::class, mappedBy="ticket")
+     */
+    private $activities;
+
     public function __construct()
     {
         $this->files = new ArrayCollection();
+        $this->created = new \DateTime();
+        $this->updated = new \DateTime();
+        $this->activities = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -198,6 +206,36 @@ class Tickets
     public function setDeletedAt(?\DateTimeInterface $deletedAt): self
     {
         $this->deletedAt = $deletedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Activity[]
+     */
+    public function getActivities(): Collection
+    {
+        return $this->activities;
+    }
+
+    public function addActivity(Activity $activity): self
+    {
+        if (!$this->activities->contains($activity)) {
+            $this->activities[] = $activity;
+            $activity->setTicket($this);
+        }
+
+        return $this;
+    }
+
+    public function removeActivity(Activity $activity): self
+    {
+        if ($this->activities->removeElement($activity)) {
+            // set the owning side to null (unless already changed)
+            if ($activity->getTicket() === $this) {
+                $activity->setTicket(null);
+            }
+        }
 
         return $this;
     }

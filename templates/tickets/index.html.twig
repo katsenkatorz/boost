@@ -3,12 +3,19 @@
 {% block title %}Tickets index{% endblock %}
 
 {% block body %}
-    <h1>Tickets index</h1>
+    <!-- As a link -->
+    <nav class="navbar navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Tickets</a>
+            <a class="pull-right btn btn-primary" href="{{ path('tickets_new') }}">Create new</a>
+        </div>
+    </nav>
+    <hr>
 
-    <table class="table">
-        <thead>
+    <table class="table table-bordered">
+        <thead class="table-light">
             <tr>
-                <th>Id</th>
+                <th>#</th>
                 <th>Title</th>
                 <th>Content</th>
                 <th>Url</th>
@@ -18,13 +25,14 @@
         <tbody>
         {% for ticket in tickets %}
             <tr>
-                <td>{{ ticket.id }}</td>
+                <td>
+                    <a class="btn btn-link" href="{{ path('tickets_show', {'id': ticket.id}) }}">{{ ticket.id }}</a>
+                </td>
                 <td>{{ ticket.title }}</td>
                 <td>{{ ticket.content }}</td>
                 <td>{{ ticket.url }}</td>
                 <td>
-                    <a href="{{ path('tickets_show', {'id': ticket.id}) }}">show</a>
-                    <a href="{{ path('tickets_edit', {'id': ticket.id}) }}">edit</a>
+                    <a class="btn btn-outline-secondary" href="{{ path('tickets_show', {'id': ticket.id}) }}">🧐 Consulter</a>
                 </td>
             </tr>
         {% else %}
@@ -35,5 +43,4 @@
         </tbody>
     </table>
 
-    <a href="{{ path('tickets_new') }}">Create new</a>
 {% endblock %}
