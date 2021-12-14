@@ -1,14 +1,13 @@
-{% extends 'base.htm
-    <a href="{{ path('tickets_edit', {'id': ticket.id}) }}">edit</a>l.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}Edit Tickets{% endblock %}
+{% block title %}Modifier Tickets{% endblock %}
 
 {% block body %}
-    <h1>Edit Tickets</h1>
-
-    {{ include('tickets/_form.html.twig', {'button_label': 'Update'}) }}
-
-    <a href="{{ path('tickets_index') }}">back to list</a>
-
+<div class="container">
+    <h1>Modifier le tickets</h1>
+    {{ include('tickets/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
     {{ include('tickets/_delete_form.html.twig') }}
+
+    <a class="btn btn-outline-secondary" href="{{ path('tickets_index') }}">Retour à la liste</a>
+</div>
 {% endblock %}

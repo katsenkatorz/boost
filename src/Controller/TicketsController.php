@@ -2,9 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\Tickets;
+use App\Form\CommentType;
 use App\Form\TicketsType;
+use App\Repository\CommentRepository;
 use App\Repository\TicketsRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,11 +46,30 @@ class TicketsController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'tickets_show', methods: ['GET'])]
-    public function show(Tickets $ticket): Response
+    #[Route('/{id}', name: 'tickets_show', methods: ['GET', 'POST'])]
+    public function show(
+        Tickets $ticket,
+        Request $request,
+        EntityManagerInterface $entityManager,
+        UserRepository $userRepository,
+        CommentRepository $commentRepository
+    ): Response
     {
-        return $this->render('tickets/show.html.twig', [
+        $comment = new Comment();
+        $comment->setTicket($ticket);
+        // Todo replace this next line by user connected
+        $comment->setUser($userRepository->findOneBy([]));
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($comment);
+            $entityManager->flush();
+        }
+
+        return $this->renderForm('tickets/show.html.twig', [
             'ticket' => $ticket,
+            'commentsTicket' => $commentRepository->findByAllByIdTickets($ticket->getId()),
+            'form' => $form,
         ]);
     }
 
